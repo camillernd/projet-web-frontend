@@ -79,7 +79,7 @@ function DiscussionPage({ user, socket }) {
         userId: user.userId,
         content: newMessageContent,
       };
-      await axios.post(`http://localhost:3000/api/message`, newMessage);
+      await axios.post(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message`, newMessage);
 
       // Émettre l'événement de création de message
       socket.emit('createMessage', newMessage);
@@ -92,7 +92,7 @@ function DiscussionPage({ user, socket }) {
 
   const handleDeleteMessage = async (messageId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/message/${messageId}`);
+      await axios.delete(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message/${messageId}`);
       // Émettre l'événement de suppression de message
       socket.emit('deleteMessage', messageId);
     } catch (error) {
