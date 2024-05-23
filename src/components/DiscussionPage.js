@@ -13,11 +13,11 @@ function DiscussionPage({ user, socket }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const discussionResponse = await axios.get(`http://localhost:3000/api/discussion/${discussionId}`);
+        const discussionResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/discussion/${discussionId}`);
         setDiscussionData(discussionResponse.data);
 
         // Récupérer les informations sur l'utilisateur qui a créé la discussion
-        const userResponse = await axios.get(`http://localhost:3000/api/user/${discussionResponse.data.userId}`);
+        const userResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${discussionResponse.data.userId}`);
         const userData = userResponse.data.data;
         // Concaténer le nom et prénom pour afficher le créateur de la discussion
         const creatorFullName = `${userData.firstName} ${userData.lastName}`;
@@ -31,15 +31,15 @@ function DiscussionPage({ user, socket }) {
 
     const fetchMessages = async () => {
       try {
-        const messagesResponse = await axios.get(`http://localhost:3000/api/message?discussionId=${discussionId}`);
+        const messagesResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message?discussionId=${discussionId}`);
         const messagesData = messagesResponse.data;
 
         if (messagesData.length > 0) {
           const messagesWithUserData = await Promise.all(messagesData.map(async message => {
-            const userResponse = await axios.get(`http://localhost:3000/api/user/${message.userId}`);
+            const userResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${message.userId}`);
             const userData = userResponse.data.data;
 
-            const likesResponse = await axios.get(`http://localhost:3000/api/like/count?messageId=${message._id}`);
+            const likesResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/like/count?messageId=${message._id}`);
             const likesCount = likesResponse.data.likesCount;
 
             return { ...message, userData, likesCount };
