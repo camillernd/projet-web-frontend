@@ -37,7 +37,7 @@ function SignUp({socket}) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post('https://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/signup', formData);
+      await axios.post('http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/signup', formData);
       console.log('Données envoyées avec succès !');
 
       // Redirection vers la page de connexion après inscription

@@ -28,7 +28,7 @@ function SignInSide({ onLogin, socket}) {
     const data = new FormData(event.currentTarget);
   
     try {
-      const response = await axios.post('https://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/login', {
+      const response = await axios.post('http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/login', {
         email: data.get('email'),
         password: data.get('password'),
       });

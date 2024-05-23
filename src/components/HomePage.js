@@ -9,7 +9,7 @@ function HomePage({ user, onLogout, socket}) {
     // Simulate fetching movie data
     const fetchMoviesData = async () => {
       try {
-        const response = await fetch('https://aftermovie-backend.cluster-ig3.igpolytech.fr/api/movie');
+        const response = await fetch('http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/movie');
         const data = await response.json();
         setMoviesData(data);
       } catch (error) {
