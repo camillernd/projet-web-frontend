@@ -1,0 +1,29 @@
+/* SignIn.css */
+
+.signInContainer {
+    position: fixed; /* Use absolute positioning to center */
+    top: 50%; /* Place the top of the block in the middle of the screen */
+    left: 50%; /* Place the left of the block in the middle of the screen */
+    transform: translate(-50%, -50%); /* Center horizontally and vertically */
+    z-index: 1; /* Ensure the login block is above the background image */
+    max-width: 400px; /* Set a maximum width for the block */
+    width: 100%; /* Set a width for the block */
+    padding: 32px;
+    background: rgba(233, 236, 235, 0.5);
+    border-radius: 16px; /* Add rounded corners */
+    backdrop-filter: blur(30px);
+}
+
+
+/* SignIn.css */
+html, body, #root, .signInBackground {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.signInBackground img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

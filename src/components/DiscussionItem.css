@@ -1,0 +1,30 @@
+.discussion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.discussion-content {
+  flex: 1;
+}
+
+.discussion-creator {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.delete-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-icon {
+  width: 20px;
+  height: 20px;
+}

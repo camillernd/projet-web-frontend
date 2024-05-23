@@ -1,0 +1,18 @@
+.like-button {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.like-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.likes-count {
+  margin-left: 5px; /* Espace entre l'icône et le nombre de likes */
+  font-size: 0.9em;
+  color: #333;
+}

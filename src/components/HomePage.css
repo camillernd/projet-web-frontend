@@ -1,0 +1,57 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Impact&family=Georgia&display=swap');
+
+body {
+  font-family: 'Georgia', serif; /* Utilisation de la police Georgia pour le corps de la page */
+}
+
+h2 {
+  font-family: 'Impact', fantasy; /* Utilisation de la police Impact pour les titres de films */
+}
+
+.band {
+  background-color: #333; /* Couleur de fond du bandeau */
+  color: white; /* Couleur du texte */
+  padding: 10px; /* Espace intérieur du bandeau */
+  text-align: center; /* Centrer le contenu du bandeau */
+}
+
+.user-info {
+  font-size: 18px; /* Taille de police pour les informations de l'utilisateur */
+}
+
+.logout-btn {
+  background-color: #ff6347; /* Couleur de fond du bouton de déconnexion */
+  color: white; /* Couleur du texte */
+  border: none; /* Suppression de la bordure */
+  padding: 8px 16px; /* Espacement intérieur du bouton */
+  cursor: pointer; /* Curseur de type pointer */
+  font-family: 'Georgia', serif; /* Utilisation de la police Georgia pour le bouton */
+  font-size: 16px; /* Taille de police pour le bouton */
+}
+
+.logout-btn:hover {
+  background-color: #cc4125; /* Couleur de fond au survol du bouton */
+}
+
+.films-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .poster-link {
+    flex-basis: calc(25% - 20px);
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .poster-item {
+    text-align: center;
+  }
+  
+  .poster-image {
+    width: 100%;
+    height: auto;
+  }
