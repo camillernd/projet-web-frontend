@@ -57,17 +57,37 @@ function DiscussionPage({ user, socket }) {
     fetchData();
 
     // Écouter les événements
-    socket.on('messageCreated', fetchMessages);
-    socket.on('messageLiked', fetchMessages);
-    socket.on('messageUnliked', fetchMessages);
-    socket.on('messageDeleted', fetchMessages);
+    const handleMessageCreated = (message) => {
+      console.log('messageCreated reçu:', message);
+      fetchMessages();
+    };
+
+    const handleMessageLiked = (message) => {
+      console.log('messageLiked reçu:', message);
+      fetchMessages();
+    };
+
+    const handleMessageUnliked = (message) => {
+      console.log('messageUnliked reçu:', message);
+      fetchMessages();
+    };
+
+    const handleMessageDeleted = (messageId) => {
+      console.log('messageDeleted reçu:', messageId);
+      fetchMessages();
+    };
+
+    socket.on('messageCreated', handleMessageCreated);
+    socket.on('messageLiked', handleMessageLiked);
+    socket.on('messageUnliked', handleMessageUnliked);
+    socket.on('messageDeleted', handleMessageDeleted);
 
     return () => {
       // Retirer les écouteurs d'événements lors du démontage du composant
-      socket.off('messageCreated', fetchMessages);
-      socket.off('messageLiked', fetchMessages);
-      socket.off('messageUnliked', fetchMessages);
-      socket.off('messageDeleted', fetchMessages);
+      socket.off('messageCreated', handleMessageCreated);
+      socket.off('messageLiked', handleMessageLiked);
+      socket.off('messageUnliked', handleMessageUnliked);
+      socket.off('messageDeleted', handleMessageDeleted);
     };
   }, [discussionId, socket]);
 
