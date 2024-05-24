@@ -72,8 +72,10 @@ function MovieDetailPage({ user, socket }) {
       
       // Émettre l'événement de création de discussion
       socket.emit('createDiscussion', newDiscussion);
+      console.log("socket ajout envoyé");
 
       setNewDiscussionTitle('');
+
     } catch (error) {
       console.error('Erreur lors de la création de la nouvelle discussion :', error);
     }
@@ -85,6 +87,7 @@ function MovieDetailPage({ user, socket }) {
       // Émettre l'événement de suppression de discussion
       socket.emit('deleteDiscussion', discussionId);
     } catch (error) {
+      console.log("socket suppression envoyé");
       console.error('Erreur lors de la suppression de la discussion :', error);
     }
   };
