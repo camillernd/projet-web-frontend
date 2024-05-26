@@ -5,7 +5,9 @@ import SignUp from './components/SignUp';
 import HomePage from './components/HomePage';
 import MovieDetailPage from './components/MovieDetailPage';
 import DiscussionPage from './components/DiscussionPage';
-import { jwtDecode } from 'jwt-decode'; 
+import ProfilePage from './components/ProfilePage';
+import Header from './components/Header';
+import {jwtDecode} from 'jwt-decode';
 import socket from './socket';
 
 function App() {
@@ -18,7 +20,8 @@ function App() {
       setUser({
         userId: decodedToken.userId,
         firstName: decodedToken.firstName,
-        role: decodedToken.role
+        lastName: decodedToken.lastName,
+        role: decodedToken.role,
       });
     }
   }, []);
@@ -35,28 +38,23 @@ function App() {
     setUser({
       userId: decodedToken.userId,
       firstName: decodedToken.firstName,
-      role: decodedToken.role
+      lastName: decodedToken.lastName,
+      role: decodedToken.role,
     });
+    socket.connect();
   };
 
   return (
     <Router>
+      <Header user={user} onLogout={handleLogout} socket={socket} />
       <Routes>
-        <Route path="/" element={<SignIn onLogin={handleLogin} socket={socket}/>} />
-        <Route path="/signin" element={<SignIn onLogin={handleLogin} socket={socket}/>} />
-        <Route path="/signup" element={<SignUp socket={socket}/>} />
-        <Route
-          path="/home"
-          element={<HomePage user={user} onLogout={handleLogout} socket={socket}/>}
-        />
-        <Route
-          path="/movie/:id"
-          element={<MovieDetailPage user={user} socket={socket} />} // Passer le socket en tant que prop
-        />
-        <Route
-          path="/discussion/:discussionId"
-          element={<DiscussionPage user={user} socket={socket} />} // Passer le socket en tant que prop
-        />
+        <Route path="/" element={<SignIn onLogin={handleLogin} socket={socket} />} />
+        <Route path="/signin" element={<SignIn onLogin={handleLogin} socket={socket} />} />
+        <Route path="/signup" element={<SignUp socket={socket} />} />
+        <Route path="/home" element={<HomePage user={user} onLogout={handleLogout} socket={socket} />} />
+        <Route path="/movie/:id" element={<MovieDetailPage user={user} socket={socket} onLogout={handleLogout} />} />
+        <Route path="/discussion/:discussionId" element={<DiscussionPage user={user} socket={socket} onLogout={handleLogout} />} />
+        <Route path="/profile" element={<ProfilePage user={user} onLogout={handleLogout} socket={socket} />} />
       </Routes>
     </Router>
   );

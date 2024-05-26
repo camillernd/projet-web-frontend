@@ -1,27 +1,39 @@
-.discussion-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
 .discussion-content {
   flex: 1;
 }
 
 .discussion-creator {
   font-size: 0.8em;
-  color: #666;
+  color: #502552;
 }
 
-.delete-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+
+.discussion-item-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.discussion-item {
+  width: 100%;
+  max-width: 900px; /* Limiter la largeur maximale */
+  margin: 10px 0;
+  border-radius: 8px; /* Arrondir les bords */
+  background-color: #f9f9f9; /* Couleur de fond */
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.discussion-item:hover {
+  transform: scale(1.02); /* Zoom léger lors du survol */
+  filter: brightness(95%); /* Assombrir légèrement lors du survol */
+}
+
+.discussion-content {
+  flex: 1;
+}
+
+.discussion-content:hover {
+  text-decoration: underline; /* Souligner le texte au survol pour indiquer qu'il est cliquable */
 }
 
 .delete-icon {

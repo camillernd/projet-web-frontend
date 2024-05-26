@@ -14,35 +14,28 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './SignIn.css';
 
-function SignInSide({ onLogin, socket}) {
+function SignInSide({ onLogin, socket }) {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSkip = () => {
-    // Passer à la page d'accueil en indiquant que l'utilisateur n'est pas connecté
-    navigate('/home', { state: { isAuthenticated: false } });
+    socket.connect();
+    navigate('/home');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-  
+
     try {
       const response = await axios.post('http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/login', {
         email: data.get('email'),
         password: data.get('password'),
       });
 
-      // Création d'un cookie HTTPOnly pour stocker l'email
       document.cookie = `email=${data.get('email')}; path=/; HttpOnly`;
-      
-      // Appeler la fonction de gestion de la connexion avec le token JWT
       onLogin(response.data.token);
-      
-      
-      // Redirigez vers la page d'accueil après une connexion réussie
       navigate('/home');
-      
     } catch (error) {
       console.error('Error during login:', error);
       setErrorMessage('Incorrect email or password');
@@ -59,28 +52,21 @@ function SignInSide({ onLogin, socket}) {
     <ThemeProvider theme={theme}>
       <div className="signInBackground">
         <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sx={{
-            position: 'relative',
-            zIndex: -1,
-          }}
-        >
-          <img
-            src="https://images.unsplash.com/photo-1614854262318-831574f15f1f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="background"
-          />
-        </Grid>
         <Box
           className="signInContainer"
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            position: 'relative',
+            zIndex: 1,
+            background: 'rgba(255, 255, 255, 0.8)',
+            padding: '32px',
+            borderRadius: '16px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
           }}
         >
-          <Avatar sx={{ m: 1 }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -107,21 +93,19 @@ function SignInSide({ onLogin, socket}) {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            {errorMessage && (
-              <Typography variant="body2" color="error" sx={{ mt: 1, mb: 2 }}>
-                {errorMessage}
-              </Typography>
-            )}
             <Box sx={{ width: '100%' }}>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, borderRadius: 20 }}
+                sx={{
+                  mt: 3,
+                  borderRadius: 20,
+                  backgroundColor: '#a851ad',
+                  '&:hover': {
+                    backgroundColor: '#8f3e91',
+                  },
+                }}
               >
                 Sign In
               </Button>
@@ -129,10 +113,18 @@ function SignInSide({ onLogin, socket}) {
                 <Grid item>
                   <Button
                     onClick={handleSkip}
-                    to="/home"
                     fullWidth
                     variant="outlined"
-                    sx={{ mt: 1, borderRadius: 20 }}
+                    sx={{
+                      mt: 1,
+                      borderRadius: 20,
+                      color: '#a851ad',
+                      borderColor: '#a851ad',
+                      '&:hover': {
+                        backgroundColor: 'rgba(168, 81, 173, 0.1)',
+                        borderColor: '#8f3e91',
+                      },
+                    }}
                   >
                     Skip for now
                   </Button>
@@ -143,7 +135,16 @@ function SignInSide({ onLogin, socket}) {
                     to="/signup"
                     fullWidth
                     variant="outlined"
-                    sx={{ mt: 1, borderRadius: 20 }}
+                    sx={{
+                      mt: 1,
+                      borderRadius: 20,
+                      color: '#a851ad',
+                      borderColor: '#a851ad',
+                      '&:hover': {
+                        backgroundColor: 'rgba(168, 81, 173, 0.1)',
+                        borderColor: '#8f3e91',
+                      },
+                    }}
                   >
                     Don't have an account? Sign Up
                   </Button>

@@ -1,57 +1,69 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Impact&family=Georgia&display=swap');
-
-body {
-  font-family: 'Georgia', serif; /* Utilisation de la police Georgia pour le corps de la page */
-}
-
-h2 {
-  font-family: 'Impact', fantasy; /* Utilisation de la police Impact pour les titres de films */
-}
-
-.band {
-  background-color: #333; /* Couleur de fond du bandeau */
-  color: white; /* Couleur du texte */
-  padding: 10px; /* Espace intérieur du bandeau */
-  text-align: center; /* Centrer le contenu du bandeau */
-}
-
-.user-info {
-  font-size: 18px; /* Taille de police pour les informations de l'utilisateur */
-}
-
-.logout-btn {
-  background-color: #ff6347; /* Couleur de fond du bouton de déconnexion */
-  color: white; /* Couleur du texte */
-  border: none; /* Suppression de la bordure */
-  padding: 8px 16px; /* Espacement intérieur du bouton */
-  cursor: pointer; /* Curseur de type pointer */
-  font-family: 'Georgia', serif; /* Utilisation de la police Georgia pour le bouton */
-  font-size: 16px; /* Taille de police pour le bouton */
-}
-
-.logout-btn:hover {
-  background-color: #cc4125; /* Couleur de fond au survol du bouton */
+.homepage-container {
+  background-color: #ffffff; /* Set the background color */
+  min-height: 100vh; /* Ensure it covers the full height of the viewport */
+  padding: 0; /* Remove any default padding */
+  margin: 0; /* Remove any default margin */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .films-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .poster-link {
-    flex-basis: calc(25% - 20px);
-    margin-bottom: 20px;
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  .poster-item {
-    text-align: center;
-  }
-  
-  .poster-image {
-    width: 100%;
-    height: auto;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px; /* Optional: Add some padding */
+  margin-top: -22px;
+}
+
+.poster-link {
+  flex-basis: calc(25% - 20px); /* Ajuster la largeur pour quatre posters par ligne */
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.poster-item {
+  text-align: center;
+}
+
+.poster-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px; /* Arrondir les bords de l'image */
+}
+
+.poster-link {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px; /* Ajouter des coins arrondis à la boîte de lien */
+}
+
+.poster-item img {
+  width: 100%;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  border-radius: 8px; /* Ajouter des coins arrondis à l'image */
+}
+
+.poster-link:hover .poster-item img {
+  transform: scale(1.05); /* Zoom léger lors du survol */
+  filter: brightness(50%); /* Assombrir l'image */
+}
+
+.poster-link:hover .poster-item p {
+  opacity: 1; /* Rendre le texte visible lors du survol */
+}
+
+.poster-item p {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 90%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  border-bottom-left-radius: 8px; /* Ajouter des coins arrondis au texte */
+  border-bottom-right-radius: 8px; /* Ajouter des coins arrondis au texte */
+}

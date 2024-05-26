@@ -4,8 +4,6 @@
   align-items: center;
   padding: 10px;
   margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
   background-color: #f9f9f9;
 }
 
@@ -34,3 +32,25 @@
   width: 20px;
   height: 20px;
 }
+
+.message-item-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.message-item {
+  width: 100%;
+  max-width: 1200px; /* Limiter la largeur maximale */
+  margin: 10px 0;
+}
+
+.message-item-container:nth-child(odd) .message-item {
+  background-color: #F1EDFF; /* Couleur de fond pour chaque deuxième message */
+  border-radius: 8px; /* Arrondir les bords */
+}
+
+.message-item {
+  border-radius: 8px; /* Arrondir les bords pour tous les messages */
+}
+

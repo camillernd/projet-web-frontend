@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { Typography, Container, Select, MenuItem, FormControl, InputLabel, TextField, Button, CircularProgress, Box } from '@mui/material';
 import DiscussionItem from './DiscussionItem'; // Importer le composant DiscussionItem
+import Header from './Header'; // Importer le composant Header
+import './MovieDetailPage.css'; // Importer le fichier CSS
 
-function MovieDetailPage({ user, socket }) {
+function MovieDetailPage({ user, socket, onLogout }) {
   const { id } = useParams();
   const [movieData, setMovieData] = useState(null);
   const [directorData, setDirectorData] = useState(null);
   const [discussions, setDiscussions] = useState([]);
   const [newDiscussionTitle, setNewDiscussionTitle] = useState('');
+  const [sortOption, setSortOption] = useState('chronological'); // État pour l'option de tri
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,13 +35,17 @@ function MovieDetailPage({ user, socket }) {
         const discussionsData = discussionsResponse.data;
 
         if (discussionsData.length > 0) {
-          const discussionsWithUserData = await Promise.all(discussionsData.map(async discussion => {
+          const discussionsWithDetails = await Promise.all(discussionsData.map(async discussion => {
             const userResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${discussion.userId}`);
             const userData = userResponse.data.data;
-            return { ...discussion, userData };
+
+            const messagesResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message?discussionId=${discussion._id}`);
+            const messageCount = messagesResponse.data.length;
+
+            return { ...discussion, userData, messageCount };
           }));
 
-          setDiscussions(discussionsWithUserData);
+          setDiscussions(sortDiscussions(discussionsWithDetails, sortOption));
         } else {
           setDiscussions([]);
         }
@@ -58,7 +66,18 @@ function MovieDetailPage({ user, socket }) {
       socket.off('discussionCreated', fetchDiscussions);
       socket.off('discussionDeleted', fetchDiscussions);
     };
-  }, [id, socket]);
+  }, [id, socket, sortOption]);
+
+  const sortDiscussions = (discussions, option) => {
+    return [...discussions].sort((a, b) => {
+      if (option === 'chronological') {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      } else if (option === 'messageCount') {
+        return b.messageCount - a.messageCount;
+      }
+      return 0;
+    });
+  };
 
   const handleNewDiscussionSubmit = async (event) => {
     event.preventDefault();
@@ -93,43 +112,75 @@ function MovieDetailPage({ user, socket }) {
   };
 
   return (
-    <div>
-      {movieData && directorData ? (
-        <div>
-          <h2>{movieData.title}</h2>
-          <p>Date de sortie : {movieData.releaseYear}</p>
-          <p>Réalisateur/Réalisatrice : {directorData.name}</p>
-          <img src={movieData.posterURL} alt={`Poster ${movieData.title}`} style={{ width: '200px' }} />
-        </div>
-      ) : (
-        <p>Chargement en cours...</p>
-      )}
+    <div className="movie-detail-container">
+      <Container maxWidth={false} style={{ padding: 0 }}>
+        {movieData && directorData ? (
+          <Box padding={2} textAlign="center" className="title-container">
+            <Typography variant="h1" gutterBottom className="title" style={{ fontWeight: 'bold' }}>{movieData.title}</Typography>
+            <Box padding={2} textAlign="center" className="data-container">
+            <Typography variant="body1" className="release-date">
+              {directorData.name} ({movieData.releaseYear})
+            </Typography>
+            </Box>
+          </Box>
+        ) : (
+          <CircularProgress />
+        )}
 
-      <h3>Discussions associées :</h3>
-      {discussions.length > 0 ? (
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          {discussions.map(discussion => (
-            <DiscussionItem
-              key={discussion._id}
-              discussion={discussion}
-              user={user}
-              onDelete={() => handleDeleteDiscussion(discussion._id)}
-            />
-          ))}
-        </ul>
-      ) : (
-        <p>Pas encore de discussions</p>
-      )}
+        <Box padding={2}>
+          <Box display="flex" justifyContent="center" alignItems="center" marginY={2}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" width="100%" maxWidth="920px">
+              {user ? (
+                <form onSubmit={handleNewDiscussionSubmit} style={{ display: 'flex', width: '100%' }}>
+                  <TextField 
+                    label="Saisir un titre pour la nouvelle discussion"
+                    variant="outlined"
+                    fullWidth
+                    value={newDiscussionTitle}
+                    onChange={(event) => setNewDiscussionTitle(event.target.value)} 
+                    style={{ marginRight: '10px', height: '56px' }}
+                    className="input-field"
+                  />
+                  <Button type="submit" variant="contained" className="button" style={{ height: '56px' }}
+                  sx={{ mx: 1, bgcolor: '#c97bfb', color: '#f1eafe', '&:hover': { bgcolor: '#975fbb' } }}>Envoyer</Button>
+                </form>
+              ) : null}
+              <FormControl variant="outlined" style={{ marginLeft: '10px', height: '56px' }}>
+                <InputLabel id="sort-label" className="select-label">Trier par</InputLabel>
+                <Select
+                  labelId="sort-label"
+                  id="sortOption"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  label="Trier par"
+                  className="select"
+                  style={{ height: '56px' }}
+                >
+                  <MenuItem value="chronological">Chronologique</MenuItem>
+                  <MenuItem value="messageCount">Les plus populaires</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
 
-      <form onSubmit={handleNewDiscussionSubmit}>
-        <input 
-          type="text" 
-          placeholder="Saisir un titre pour la nouvelle discussion" 
-          value={newDiscussionTitle}
-          onChange={(event) => setNewDiscussionTitle(event.target.value)} 
-        />
-        <button type="submit">Envoyer</button>
-      </form>
+          {discussions.length > 0 ? (
+            <ul style={{ listStyleType: 'none', padding: 0 }}>
+              {discussions.map(discussion => (
+                <DiscussionItem
+                  key={discussion._id}
+                  discussion={discussion}
+                  user={user}
+                  onDelete={() => handleDeleteDiscussion(discussion._id)}
+                />
+              ))}
+            </ul>
+          ) : (
+            <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center', mt: 6, color: '#643e9e'}}>
+              Pas encore de discussions
+            </Typography>
+          )}
+        </Box>
+      </Container>
     </div>
   );
 }

@@ -1,0 +1,62 @@
+.movie-detail-container {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .movie-detail-container h2 {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .movie-detail-container {
+    background-color: #ffffff; /* Couleur de fond similaire à la home page */
+  }
+  
+  .title {
+    color: #9158e9; /* Couleur de titre similaire */
+  }
+  
+
+  
+  .select {
+    background-color: #e2cfff;
+    color: #ffe1cf;
+  }
+  
+  .select:hover {
+    background-color: #643e9e;
+  }
+
+  .data-container{
+    margin-bottom: -10px; /* Réduire la marge entre le titre et la date de sortie */
+    margin-top: -55px;
+  }
+
+  .release-date{
+    color: #5d1af5;
+  }
+
+  .title-container {
+    background-color: #E6DAFB; 
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+  
+.input-field {
+  background-color: #faf6ff !important;
+}
+
+.select {
+  background-color: #f9eeff !important;
+  color: #5d1af5 !important;
+}
+
+.select:hover {
+  background-color: #e9ddfe !important;
+}
+
+.input-label {
+  color: #ffe1cf !important;
+}
+
+.select-label {
+  color: #5d1af5 !important;
+}

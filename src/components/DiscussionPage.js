@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { Typography, Container, Select, MenuItem, FormControl, InputLabel, TextField, Button, CircularProgress, Box } from '@mui/material';
 import MessageItem from './MessageItem';
+import Header from './Header'; // Importer le composant Header
+import './DiscussionPage.css'; // Importer le fichier CSS
 
-function DiscussionPage({ user, socket }) {
+function DiscussionPage({ user, socket, onLogout }) {
   const { discussionId } = useParams();
   const [discussionData, setDiscussionData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessageContent, setNewMessageContent] = useState('');
   const [creatorName, setCreatorName] = useState('');
+  const [sortOption, setSortOption] = useState('chronological'); // État pour l'option de tri
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,14 +20,12 @@ function DiscussionPage({ user, socket }) {
         const discussionResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/discussion/${discussionId}`);
         setDiscussionData(discussionResponse.data);
 
-        // Récupérer les informations sur l'utilisateur qui a créé la discussion
         const userResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${discussionResponse.data.userId}`);
         const userData = userResponse.data.data;
-        // Concaténer le nom et prénom pour afficher le créateur de la discussion
         const creatorFullName = `${userData.firstName} ${userData.lastName}`;
         setCreatorName(creatorFullName);
 
-        fetchMessages(); // Appel initial pour récupérer les messages
+        fetchMessages();
       } catch (error) {
         console.error('Erreur lors de la récupération des données de la discussion :', error);
       }
@@ -45,7 +47,7 @@ function DiscussionPage({ user, socket }) {
             return { ...message, userData, likesCount };
           }));
 
-          setMessages(messagesWithUserData);
+          setMessages(sortMessages(messagesWithUserData, sortOption));
         } else {
           setMessages([]);
         }
@@ -56,7 +58,6 @@ function DiscussionPage({ user, socket }) {
 
     fetchData();
 
-    // Écouter les événements
     const handleMessageCreated = (message) => {
       console.log('messageCreated reçu:', message);
       fetchMessages();
@@ -83,13 +84,23 @@ function DiscussionPage({ user, socket }) {
     socket.on('messageDeleted', handleMessageDeleted);
 
     return () => {
-      // Retirer les écouteurs d'événements lors du démontage du composant
       socket.off('messageCreated', handleMessageCreated);
       socket.off('messageLiked', handleMessageLiked);
       socket.off('messageUnliked', handleMessageUnliked);
       socket.off('messageDeleted', handleMessageDeleted);
     };
-  }, [discussionId, socket]);
+  }, [discussionId, socket, sortOption]);
+
+  const sortMessages = (messages, option) => {
+    return [...messages].sort((a, b) => {
+      if (option === 'chronological') {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      } else if (option === 'likes') {
+        return b.likesCount - a.likesCount;
+      }
+      return 0;
+    });
+  };
 
   const handleNewMessageSubmit = async (event) => {
     event.preventDefault();
@@ -101,10 +112,9 @@ function DiscussionPage({ user, socket }) {
       };
       await axios.post(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message`, newMessage);
 
-      // Émettre l'événement de création de message
       socket.emit('createMessage', newMessage);
 
-      setNewMessageContent(''); // Réinitialiser le contenu du nouveau message
+      setNewMessageContent('');
     } catch (error) {
       console.error('Erreur lors de la création du nouveau message :', error);
     }
@@ -113,7 +123,6 @@ function DiscussionPage({ user, socket }) {
   const handleDeleteMessage = async (messageId) => {
     try {
       await axios.delete(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message/${messageId}`);
-      // Émettre l'événement de suppression de message
       socket.emit('deleteMessage', messageId);
     } catch (error) {
       console.error('Erreur lors de la suppression du message :', error);
@@ -121,47 +130,74 @@ function DiscussionPage({ user, socket }) {
   };
 
   return (
-    <div>
-      {discussionData ? (
-        <div>
-          <h2>
-            Titre de la discussion : {discussionData.title}
-            {/* Afficher le nom du créateur à côté du titre de la discussion */}
-            {creatorName && (
-              <span> - Créé par : {creatorName}</span>
-            )}
-          </h2>
-        </div>
-      ) : (
-        <p>Chargement en cours...</p>
-      )}
+    <div style={{ width: '100%' }}>
+      <Container maxWidth={false} style={{ padding: 0 }}>
+        {discussionData ? (
+          <Box className="title-box" padding={2} textAlign="center">
+            <Typography style={{ fontWeight: 'bold' }} variant="h2" className="title">
+              {discussionData.title}
+            </Typography>
+            <Typography variant="h6" className="creator">
+              Ouvert par: {creatorName}
+            </Typography>
+          </Box>
+        ) : (
+          <CircularProgress />
+        )}
 
-      <h3>Messages associés :</h3>
-      {messages.length > 0 ? (
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          {messages.map(message => (
-            <MessageItem
-              key={message._id}
-              message={message}
-              user={user}
-              onDelete={() => handleDeleteMessage(message._id)}
-              socket={socket}
-            />
-          ))}
-        </ul>
-      ) : (
-        <p>Pas encore de message</p>
-      )}
+        <Box padding={2}>
+          <Box display="flex" justifyContent="center" alignItems="center" marginY={2}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" width="100%" maxWidth="1220px">
+              {user ? (
+                <form onSubmit={handleNewMessageSubmit} style={{ display: 'flex', width: '100%' }}>
+                  <TextField 
+                    label="Saisir un nouveau message"
+                    variant="outlined"
+                    fullWidth
+                    value={newMessageContent}
+                    onChange={(event) => setNewMessageContent(event.target.value)}
+                    style={{ marginRight: '10px', height: '56px' }}
+                  />
+                  <Button type="submit" variant="contained" color="primary" style={{ height: '56px' }} 
+                  sx={{ mx: 1, bgcolor: '#c97bfb', color: '#f1eafe', '&:hover': { bgcolor: '#975fbb' } }}>Envoyer</Button>
+                </form>
+              ) : null}
+              <FormControl variant="outlined" style={{ marginLeft: '10px', height: '56px' }}>
+                <InputLabel id="sort-label">Trier par</InputLabel>
+                <Select
+                  labelId="sort-label"
+                  id="sortOption"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  label="Trier par"
+                  style={{ height: '56px' }}
+                >
+                  <MenuItem value="chronological">Chronologique</MenuItem>
+                  <MenuItem value="likes">Nombre de likes</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
 
-      <form onSubmit={handleNewMessageSubmit}>
-        <input 
-          type="text" 
-          placeholder="Saisir un nouveau message" 
-          value={newMessageContent}
-          onChange={(event) => setNewMessageContent(event.target.value)} 
-        />
-        <button type="submit">Envoyer</button>
-      </form>
+          {messages.length > 0 ? (
+            <ul style={{ listStyleType: 'none', padding: 0 }}>
+              {messages.map(message => (
+                <MessageItem
+                  key={message._id}
+                  message={message}
+                  user={user}
+                  onDelete={() => handleDeleteMessage(message._id)}
+                  socket={socket}
+                />
+              ))}
+            </ul>
+          ) : (
+            <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center', mt: 6, color: '#643e9e'}}>
+              Pas encore de messages
+            </Typography>
+          )}
+        </Box>
+      </Container>
     </div>
   );
 }

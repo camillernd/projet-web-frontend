@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; 
-import './HomePage.css'; // Importer le fichier de style CSS
+import { Link } from 'react-router-dom';
+import Header from './Header';
+import MovieSearch from './MovieSearch';
+import './HomePage.css';
 
-function HomePage({ user, onLogout, socket}) {
-  const [moviesData, setMoviesData] = useState([]); // State to store movie data
+function HomePage({ user, onLogout, socket }) {
+  const [moviesData, setMoviesData] = useState([]);
 
   useEffect(() => {
-    // Simulate fetching movie data
     const fetchMoviesData = async () => {
       try {
         const response = await fetch('http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/movie');
@@ -21,22 +22,12 @@ function HomePage({ user, onLogout, socket}) {
   }, []);
 
   return (
-    <div>
-      <div className="band">
-        {user ? ( // Vérifie si l'utilisateur est connecté en vérifiant si l'objet user est défini
-          <>
-            <p className="user-info">{`Bienvenue, ${user.firstName} ! Rôle: ${user.role}`}</p>
-            <button className="logout-btn" onClick={onLogout}>Se déconnecter</button>
-          </>
-        ) : (
-          <p className="user-info">Non Connecté</p>
-        )}
-      </div>
+    <div className="homepage-container">
+      <MovieSearch setMoviesData={setMoviesData} />
       <div className="films-container">
         {moviesData.map(movie => (
           <Link key={movie._id} to={`/movie/${movie._id}`} className="poster-link">
             <div className="poster-item">
-              <p>{movie.title}</p>
               <img src={movie.posterURL} alt={`Poster ${movie.title}`} className="poster-image" />
             </div>
           </Link>

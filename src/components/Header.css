@@ -1,0 +1,41 @@
+ .user-info {
+    color: white; /* Couleur du texte */
+  }
+  
+  .header-btn {
+    margin: 0 10px; /* Marge entre les boutons */
+  }
+  
+  .header {
+    padding: 10px; /* Rembourrage */
+    position: relative; /* Required for pseudo-elements to be positioned relative to the header */
+    z-index: 0; /* Ensure the header stays on top */
+  }
+  
+  .header::before, 
+  .header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    z-index: -1; /* Ensure pseudo-elements are behind the header */
+  }
+
+  /* Header.css */
+.welcome-text {
+    margin-bottom: -5px; /* Ajustez cette valeur selon vos besoins */
+  }
+  
+.header {
+    background-size: cover; /* Assure que l'image couvre toute la bannière */
+    background-position: center; /* Centre l'image dans la bannière */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px; /* Utilisez des valeurs correspondant à vos besoins */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ajoute une ombre pour la profondeur */
+    height: 60px
+}

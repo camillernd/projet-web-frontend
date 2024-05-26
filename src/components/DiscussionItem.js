@@ -1,26 +1,36 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Importer Link depuis react-router-dom
+import { useNavigate } from 'react-router-dom';
+import { Paper, Typography, Tooltip, IconButton, Box } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import './DiscussionItem.css';
-import trashIcon from '../assets/trash-icon.png';
 
 const DiscussionItem = ({ discussion, user, onDelete }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/discussion/${discussion._id}`);
+  };
+
   return (
-    <li className="discussion-item">
-      <div className="discussion-content">
-        {/* Utiliser Link autour du titre pour créer un lien vers la page de discussion */}
-        <Link to={`/discussion/${discussion._id}`} className="discussion-title">
-          <h4>{discussion.title}</h4>
-        </Link>
-        {discussion.userData && (
-          <p className="discussion-creator">Créé par : {discussion.userData.firstName} {discussion.userData.lastName}</p>
+    <div className="discussion-item-container">
+      <Paper elevation={3} className="discussion-item" style={{ padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <Box className="discussion-content" onClick={handleNavigate} sx={{ cursor: 'pointer', flex: 1 }}>
+          <Typography variant="h6" gutterBottom color="#52126b">{discussion.title}</Typography>
+          {discussion.userData && (
+            <Typography variant="body2" color="#502552">
+              Créé par : {discussion.userData.firstName} {discussion.userData.lastName}
+            </Typography>
+          )}
+        </Box>
+        {user && user.userId === discussion.userId && (
+          <Tooltip title="Supprimer">
+            <IconButton onClick={onDelete} sx={{ marginLeft: '10px' }}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         )}
-      </div>
-      {user.userId === discussion.userId && (
-        <button onClick={onDelete} className="delete-button">
-          <img src={trashIcon} alt="Delete" className="delete-icon" />
-        </button>
-      )}
-    </li>
+      </Paper>
+    </div>
   );
 };
 
