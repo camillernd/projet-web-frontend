@@ -5,8 +5,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -93,6 +91,11 @@ function SignInSide({ onLogin, socket }) {
               id="password"
               autoComplete="current-password"
             />
+            {errorMessage && (
+              <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+                {errorMessage}
+              </Typography>
+            )}
             <Box sx={{ width: '100%' }}>
               <Button
                 type="submit"
