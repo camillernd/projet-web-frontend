@@ -12,7 +12,7 @@ function ProfilePage({ user, onLogout }) {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${user.userId}`, { firstName, lastName });
+      await axios.put(process.env.REACT_APP_API_URL + `/api/user/${user.userId}`, { firstName, lastName });
       alert('Informations mises à jour avec succès. Veuillez vous reconnecter pour voir les modifications');
     } catch (error) {
       console.error('Erreur lors de la mise à jour des informations:', error);
@@ -21,7 +21,7 @@ function ProfilePage({ user, onLogout }) {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.delete(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${user.userId}`);
+      await axios.delete(process.env.REACT_APP_API_URL + `/api/user/${user.userId}`);
       onLogout();
       navigate('/signin');
     } catch (error) {

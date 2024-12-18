@@ -10,7 +10,7 @@ function HomePage({ user, onLogout, socket }) {
   useEffect(() => {
     const fetchMoviesData = async () => {
       try {
-        const response = await fetch('http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/movie');
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/movie');
         const data = await response.json();
         setMoviesData(data);
       } catch (error) {

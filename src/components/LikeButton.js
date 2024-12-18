@@ -12,7 +12,7 @@ function LikeButton({ user, messageId, socket, likesCount }) {
     if (user) {
       const fetchLikeStatus = async () => {
         try {
-          const response = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/like/check?messageId=${messageId}&userId=${user.userId}`);
+          const response = await axios.get(process.env.REACT_APP_API_URL + `/api/like/check?messageId=${messageId}&userId=${user.userId}`);
           setLiked(response.data.liked);
         } catch (error) {
           console.error('Error fetching like status:', error);
@@ -28,7 +28,7 @@ function LikeButton({ user, messageId, socket, likesCount }) {
 
     try {
       if (liked) {
-        await axios.delete('http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/like', {
+        await axios.delete(process.env.REACT_APP_API_URL + '/api/like', {
           data: {
             messageId: messageId,
             userId: user.userId
@@ -37,7 +37,7 @@ function LikeButton({ user, messageId, socket, likesCount }) {
         setLiked(false);
         socket.emit('unlikeMessage', { messageId: messageId, userId: user.userId });
       } else {
-        await axios.post(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/like`, { messageId, userId: user.userId });
+        await axios.post(process.env.REACT_APP_API_URL + `/api/like`, { messageId, userId: user.userId });
         setLiked(true);
         socket.emit('likeMessage', { messageId: messageId, userId: user.userId });
       }

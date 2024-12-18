@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
 
-const socket = io('http://aftermovie-backend.cluster-ig3.igpolytech.fr');
+const socket = io(process.env.REACT_APP_API_URL + '');
 
 export default socket;

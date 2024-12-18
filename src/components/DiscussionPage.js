@@ -17,10 +17,10 @@ function DiscussionPage({ user, socket, onLogout }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const discussionResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/discussion/${discussionId}`);
+        const discussionResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/discussion/${discussionId}`);
         setDiscussionData(discussionResponse.data);
 
-        const userResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${discussionResponse.data.userId}`);
+        const userResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/user/${discussionResponse.data.userId}`);
         const userData = userResponse.data.data;
         const creatorFullName = `${userData.firstName} ${userData.lastName}`;
         setCreatorName(creatorFullName);
@@ -33,15 +33,15 @@ function DiscussionPage({ user, socket, onLogout }) {
 
     const fetchMessages = async () => {
       try {
-        const messagesResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message?discussionId=${discussionId}`);
+        const messagesResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/message?discussionId=${discussionId}`);
         const messagesData = messagesResponse.data;
 
         if (messagesData.length > 0) {
           const messagesWithUserData = await Promise.all(messagesData.map(async message => {
-            const userResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${message.userId}`);
+            const userResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/user/${message.userId}`);
             const userData = userResponse.data.data;
 
-            const likesResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/like/count?messageId=${message._id}`);
+            const likesResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/like/count?messageId=${message._id}`);
             const likesCount = likesResponse.data.likesCount;
 
             return { ...message, userData, likesCount };
@@ -110,7 +110,7 @@ function DiscussionPage({ user, socket, onLogout }) {
         userId: user.userId,
         content: newMessageContent,
       };
-      await axios.post(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message`, newMessage);
+      await axios.post(process.env.REACT_APP_API_URL + `/api/message`, newMessage);
 
       socket.emit('createMessage', newMessage);
 
@@ -122,7 +122,7 @@ function DiscussionPage({ user, socket, onLogout }) {
 
   const handleDeleteMessage = async (messageId) => {
     try {
-      await axios.delete(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message/${messageId}`);
+      await axios.delete(process.env.REACT_APP_API_URL + `/api/message/${messageId}`);
       socket.emit('deleteMessage', messageId);
     } catch (error) {
       console.error('Erreur lors de la suppression du message :', error);

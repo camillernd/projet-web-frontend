@@ -17,10 +17,10 @@ function MovieDetailPage({ user, socket, onLogout }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const movieResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/movie/${id}`);
+        const movieResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/movie/${id}`);
         setMovieData(movieResponse.data);
 
-        const directorResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/celeb/${movieResponse.data.director}`);
+        const directorResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/celeb/${movieResponse.data.director}`);
         setDirectorData(directorResponse.data);
 
         fetchDiscussions();
@@ -31,15 +31,15 @@ function MovieDetailPage({ user, socket, onLogout }) {
 
     const fetchDiscussions = async () => {
       try {
-        const discussionsResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/discussion?filmId=${id}`);
+        const discussionsResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/discussion?filmId=${id}`);
         const discussionsData = discussionsResponse.data;
 
         if (discussionsData.length > 0) {
           const discussionsWithDetails = await Promise.all(discussionsData.map(async discussion => {
-            const userResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/user/${discussion.userId}`);
+            const userResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/user/${discussion.userId}`);
             const userData = userResponse.data.data;
 
-            const messagesResponse = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/message?discussionId=${discussion._id}`);
+            const messagesResponse = await axios.get(process.env.REACT_APP_API_URL + `/api/message?discussionId=${discussion._id}`);
             const messageCount = messagesResponse.data.length;
 
             return { ...discussion, userData, messageCount };
@@ -87,7 +87,7 @@ function MovieDetailPage({ user, socket, onLogout }) {
         userId: user.userId,
         title: newDiscussionTitle
       };
-      await axios.post(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/discussion`, newDiscussion);
+      await axios.post(process.env.REACT_APP_API_URL + `/api/discussion`, newDiscussion);
       
       // Émettre l'événement de création de discussion
       socket.emit('createDiscussion', newDiscussion);
@@ -102,7 +102,7 @@ function MovieDetailPage({ user, socket, onLogout }) {
 
   const handleDeleteDiscussion = async (discussionId) => {
     try {
-      await axios.delete(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/discussion/${discussionId}`);
+      await axios.delete(process.env.REACT_APP_API_URL + `/api/discussion/${discussionId}`);
       // Émettre l'événement de suppression de discussion
       socket.emit('deleteDiscussion', discussionId);
     } catch (error) {

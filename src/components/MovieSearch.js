@@ -11,7 +11,7 @@ function MovieSearch({ setMoviesData }) {
     event.preventDefault(); // Prevent form submission default behavior
     console.log(`Searching for movies with title: ${searchQuery}`);
     try {
-      const response = await axios.get(`http://aftermovie-backend.cluster-ig3.igpolytech.fr/api/movie/search/title`, {
+      const response = await axios.get(process.env.REACT_APP_API_URL + `/api/movie/search/title`, {
         params: { title: searchQuery }
       });
       console.log('Response data:', response.data);
